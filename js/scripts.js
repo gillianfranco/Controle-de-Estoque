@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function(){ 
 	
 	/*Disabled ENTER Submit Form*/
 	$('input').keypress(function (e) {

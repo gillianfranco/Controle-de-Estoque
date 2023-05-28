@@ -59,19 +59,23 @@
 						</tr>
 						
 						<tr>
-							<td> <span id="tableOS">12345</span></td>
-							<td> <span id="tableInvoice">7895</span></td>
-							<td> <span id="tableStatus">Aguardando</span></td>
-							<td> <span id="tableOp"></span>Sedex</td>
-							<td> <span id="tableQuantity"></span>12/12/2021</td>
-							<td> <span id="tableLocal"></span>São Paulo/SP</td>
+							<td> <span id="tableOS"></span></td>
+							<td> <span id="tableInvoice"></span></td>
+							<td> <span id="tableStatus"></span></td>
+							<td> <span id="tableOp"></span></td>
+							<td> <span id="tableQuantity"></span></td>
+							<td> <span id="tableLocal"></span></td>
 						</tr>
 					</table>
 				</section>
 			</article>
 			
 			<article id="stockIn">
-				
+				<?php
+					$Read = $pdo->prepare("SELECT a.product_id, a.product_name, a.product_quantity, b.storage_id, b.product_id, b.storage_street, b.storage_local, b.storage_floor FROM products a INNER JOIN storage b ON (b.product_id = a.product_id)
+					GROUP BY b.product_id");
+					$Read->execute();
+				?>
 				<h1><i class="fa fa-caret-right"></i> Operação de Entrada</h1>
 				
 				<form method="post" id="formStockIn">
@@ -79,9 +83,9 @@
 					<div class="divisor2">
 						<label for="stockInProduct">Produto</label>
 						<select name="stockInProduct" id="stockInProduct">
-							<option value="1">Caixa Azul</option>
-							<option value="2">Caixa Verde</option>
-							<option value="3">Caixa Vermelha</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['product_id'])?>"><?= strip_tags($Show['product_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
@@ -130,16 +134,21 @@
 			</article>
 			
 			<article id="stockOut">
-				
+				<?php
+					$Read = $pdo->prepare("SELECT a.product_id, a.product_name, a.product_quantity, b.storage_id, b.product_id, b.storage_street, b.storage_local, b.storage_floor FROM products a INNER JOIN storage b ON (b.product_id = a.product_id)
+					GROUP BY b.product_id");
+					$Read->execute();
+				?>
+
 				<h1><i class="fa fa-caret-right"></i> Operação de Saída</h1>
 				<form method="post" id="formStockOut">
 					
 					<div class="divisor2">
 						<label for="stockOutProduct">Produto</label>
 						<select name="stockOutProduct" id="stockOutProduct">
-							<option value="1">Caixa Azul</option>
-							<option value="2">Caixa Verde</option>
-							<option value="3">Caixa Vermelha</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['product_id'])?>"><?= strip_tags($Show['product_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
@@ -191,7 +200,12 @@
 			</article>
 			
 			<article id="stockBack">
-				
+				<?php
+					$Read = $pdo->prepare("SELECT a.product_id, a.product_name, a.product_quantity, b.storage_id, b.product_id, b.storage_street, b.storage_local, b.storage_floor FROM products a INNER JOIN storage b ON (b.product_id = a.product_id)
+					GROUP BY b.product_id");
+					$Read->execute();
+				?>
+
 				<h1><i class="fa fa-caret-right"></i> Operação de Devolução</h1>
 				<form method="post" id="formStockBack">
 					
@@ -205,9 +219,9 @@
 					<div class="divisor2">
 						<label for="stockBackProduct">Produto</label>
 						<select name="stockBackProduct" id="stockBackProduct">
-							<option value="1">Caixa Azul</option>
-							<option value="2">Caixa Verde</option>
-							<option value="3">Caixa Vermelha</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['product_id'])?>"><?= strip_tags($Show['product_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
@@ -222,32 +236,44 @@
 					</div>
 					
 					<div class="divisor2">
-						
+					<?php
+						$Read = $pdo->prepare("SELECT devolutiontype_id, devolutiontype_name FROM devolution_type");
+						$Read->execute();
+					?>
+
 						<label for="stockBackLocal">Tipo de Devolução</label>
 						<select name="stockBackLocal" id="stockBackLocal">
-							<option value="1">Produto Defeituoso</option>
-							<option value="2">Arrependimento</option>
-							<option value="3">Produto Errado</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['devolutiontype_id'])?>"><?= strip_tags($Show['devolutiontype_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
 					<div class="divisor2">
+						<?php
+							$Read = $pdo->prepare("SELECT condition_id, condition_name FROM conditions");
+							$Read->execute();
+						?>
+
 						<label for="stockBackProd">Estado do Produto</label>
 						<select name="stockBackProd" id="stockBackProd">
-							<option value="1">Sem Avarias</option>
-							<option value="2">Com Avarias</option>
-							<option value="3">Defeito Visível</option>
-							<option value="4">Defeito Oculto</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['condition_id'])?>"><?= strip_tags($Show['condition_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
 					<div class="divisor2">
+					<?php
+						$Read = $pdo->prepare("SELECT client_id, client_name FROM client");
+						$Read->execute();
+					?>
+
 						<label for="stockBackClient">Cliente</label>
-							
 						<select name="stockBackClient" id="stockBackClient">
-							<option value="1">Cliente A</option>
-							<option value="2">Cliente B</option>
-							<option value="3">Cliente C</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['client_id'])?>"><?= strip_tags($Show['client_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
@@ -279,12 +305,16 @@
 					</div>
 					
 					<div class="divisor2">
-						
+					<?php
+						$Read = $pdo->prepare("SELECT Id, Name, Acronym FROM state ORDER BY Acronym ASC");
+						$Read->execute();
+					?>
+
 						<label for="stockSenderState">UF</label>
 						<select name="stockSenderState" id="stockSenderState">
-							<option value="1">RS</option>
-							<option value="2">RJ</option>
-							<option value="3">SP</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['Id'])?>"><?= strip_tags($Show['Acronym'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
@@ -296,39 +326,48 @@
 						
 						<select name="stockSenderCity" id="stockSenderCity" readonly style="background-color: #ccc;">
 							<option value="0">Selecione o UF</option>
-							<option value="1">Campinas</option>
-							<option value="2">Guarujá</option>
-							<option value="3">São Paulo</option>
 						</select>
 					</div>
 					
 					<div class="divisor2">
-						
+						<?php
+							$Read = $pdo->prepare("SELECT shipping_id, shipping_name FROM shipping ORDER BY shipping_name ASC");
+							$Read->execute();
+						?>
+
 						<label for="stockSenderTransp">Pedido Via</label>
 						<select name="stockSenderTransp" id="stockSenderTransp">
-							<option value="1">Correios/Pac</option>
-							<option value="2">Correios/Sedex</option>
-							<option value="3">Transportadora A</option>
-							<option value="4">Transportadora B</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['shipping_id'])?>"><?= strip_tags($Show['shipping_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
 					<div class="divisor2">
+						<?php
+							$Read = $pdo->prepare("SELECT status_id, status_name FROM status ORDER BY status_name ASC");
+							$Read->execute();
+						?>
+
 						<label for="stockSenderStatus">Status da OS</label>
 						<select name="stockSenderStatus" id="stockSenderStatus">
-							<option value="1">Aguardando</option>
-							<option value="2">Devolvido</option>
-							<option value="3">Despachado</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['status_id'])?>"><?= strip_tags($Show['status_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
 					<div class="divisor2">
+						<?php
+							$Read = $pdo->prepare("SELECT condition_id, condition_name FROM conditions");
+							$Read->execute();
+						?>
+
 						<label for="stockSenderProd">Estado do Produto</label>
 						<select name="stockSenderProd" id="stockSenderProd">
-							<option value="1">Sem Avarias</option>
-							<option value="2">Com Avarias</option>
-							<option value="3">Defeito Visível</option>
-							<option value="4">Defeito Oculto</option>
+							<?php foreach($Read as $Show) :?>
+							<option value="<?= strip_tags($Show['condition_id'])?>"><?= strip_tags($Show['condition_name'])?></option>
+							<?php endforeach;?>
 						</select>
 					</div>
 					
